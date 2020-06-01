@@ -1,4 +1,6 @@
-﻿using System;
+﻿using System.IO;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CdsConsoleApp
 {
@@ -6,7 +8,17 @@ namespace CdsConsoleApp
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            IConfiguration configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
+
+            var serviceProvider = new ServiceCollection()
+                .Configure<CdsConfig>(configuration.GetSection(nameof(CdsConfig)))
+                .AddSingleton<App, App>()
+                .BuildServiceProvider();
+
+            serviceProvider.GetService<App>().Run(args);
         }
     }
 }
