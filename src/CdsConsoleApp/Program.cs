@@ -11,10 +11,12 @@ namespace CdsConsoleApp
             IConfiguration configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
+                .AddUserSecrets<Program>()
                 .Build();
 
             var serviceProvider = new ServiceCollection()
                 .Configure<CdsConfig>(configuration.GetSection(nameof(CdsConfig)))
+                .AddTransient<CdsService, CdsService>()
                 .AddSingleton<App, App>()
                 .BuildServiceProvider();
 
